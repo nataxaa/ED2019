@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+ const int morto = 0 ;   
+	
+	
+	int matar_a_direita (int vet[],int inicio,int tam){
+
+    int cont = (inicio + 1) % tam;
+    int n = 0;
+    int posicao = 0;
+
+    while(n != vet[inicio]){
+        if(vet[cont] == 0){
+            cont = (cont + 1) % tam;
+        }else {
+            posicao = cont;
+            cont = (cont + 1) % tam;
+            n++;
+        }
+    }
+    return posicao;
+}
+int matar_a_esquerda(int vet[], int inicio, int tam){
+
+    int cont = inicio - 1;
+    int n = 0;
+    int posicao = 0;
+
+    if(cont < 0){
+        cont = tam - 1;
+    }
+    while(n != vet[inicio]){
+        if(vet[cont] == 0){
+            cont--;
+            if(cont < 0){
+                cont = tam - 1;
+            }
+        }else{
+            posicao = cont;
+            cont--;
+            if(cont < 0){
+                cont = tam - 1;
+            }
+            n--;
+        }
+    }
+    return posicao;
+}
+	
+	void mostrar_vetor(int vet[], int tam, int assasino){
+		printf("[");
+		bool primeiro = true ;
+		int i;
+		for(i=0;i<tam;i++){
+		     	if(vet[i]!=morto){
+		     		if(primeiro) primeiro = false;
+		     		else printf(" ");
+                    if(assasino == i) printf("%dE", vet[i]);  	
+		     		else printf("%d", vet[i]);
+				 }
+		}
+		printf("]\n");
+	}
+	
+	int achar_vivo(int vet[], int tam, int inicio){
+		   int posicao = 0;
+
+    if(vet[inicio] > 0){
+        posicao = (inicio + 1) % tam;
+    }else if(vet[inicio] < 0){
+        posicao = inicio - 1;
+        if(posicao < 0){
+            posicao = tam - 1;
+        }
+    }
+
+    if(vet[inicio] > 0) {
+        while (vet[posicao] == 0) {
+            if (vet[posicao] == 0) {
+                posicao = (posicao + 1) % tam;
+            }
+        }
+    }else if(vet[inicio] < 0){
+        while (vet[posicao] == 0) {
+            posicao--;
+            if(posicao < 0){
+                posicao = tam - 1;
+            }
+        }
+    }
+    return posicao;
+	}
+	
+	int main(){
+    	
+    	int tamanho;
+    	int escolhido;
+    	int fase; 
+    	
+		scanf("%d", &tamanho);
+		scanf("%d", &escolhido);
+		scanf("%d", &fase);
+		
+		escolhido = escolhido - 1;
+		
+		int vet[tamanho];
+		
+        int i;
+		for(i=0;i<tamanho;i++){
+            vet[i] = i+1;
+		}
+		if(fase>0){
+			int i;
+			for(i=0;i<tamanho;i++){
+				if(vet[i] % 2 == 0) vet[i] = -vet[i];
+			
+			}
+		}
+		else{
+			int i;
+			for(i=0;i<tamanho;i++){
+				if(vet[i] % 2 != 0) vet[i] = -vet[i];
+			
+			}
+		}
+
+		int quant = tamanho;
+		
+		mostrar_vetor(vet, tamanho, escolhido);
+		
+		for(i = 0; i < tamanho -1; i++){
+
+        int vai_morrer = achar_vivo(vet,tamanho,escolhido);
+        vet[vai_morrer] = 0;
+        if(vet[escolhido] > 0){
+            escolhido = matar_a_direita(vet,escolhido,tamanho);
+        }
+		else if(vet[escolhido] < 0){
+            escolhido = matar_a_esquerda(vet,escolhido,tamanho);
+        }
+        mostrar_vetor(vet,tamanho,escolhido);
+
+    }
+		
+	}
